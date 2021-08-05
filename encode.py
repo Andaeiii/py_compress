@@ -1,7 +1,9 @@
 import os
 import subprocess
+import shutil           # to move files to another folder.
 
 filesArr = []
+finalArr = []
 
 # get the current working directory...
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -28,11 +30,15 @@ for subdirs, dirs, files in os.walk(rootdir):
             subprocess.run("ffmpeg -i " + media_in.replace(" ", "\\ ") +
                            " -vcodec libx264 -crf 22 " + media_out, shell=True)
             filesArr.append(media_in)
+            print("file (" + media_in + ") - removed to server")
 
             subprocess.run("ffmpeg -i " + media_out + " -i " + watermark +
                            " -filter_complex \"overlay=main_w-(overlay_w+10) : main_h-(10+overlay_h)\" " + media_watermarked, shell=True)
 
             filesArr.append(media_out)
+            finalArr.append(media_watermarked)
+
+            print("file (" + media_out + ") - removed to server")
 
             pass
         elif extension == ".mp4":
@@ -42,4 +48,17 @@ for subdirs, dirs, files in os.walk(rootdir):
             pass
 
 
- print(filesArr)
+print(filesArr)
+
+# delete files if they exist...
+
+for file in filesArr:
+    if os.path.exists(file):
+        print("file (" + file + ") - removed to server")
+        os.remove(file)
+
+
+for file in finalArr:
+    if os.path.exists(file):
+        shutil.move(file, dir_path + '/compressed/'+file)
+        print("file (" + file + ") - to new location")
