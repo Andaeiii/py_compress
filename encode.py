@@ -1,6 +1,8 @@
-import os
 import subprocess
+import os
 import shutil           # to move files to another folder.
+
+from pathlib import Path
 
 filesArr = []
 finalArr = []
@@ -10,6 +12,12 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 rootdir = dir_path + '/media/vids'
 
 watermark = dir_path + '/media/watermark.png'
+compressed = str(Path.cwd() / '/media/compressed/')
+
+print(compressed)
+
+# quit()  # or os._exit(), sys.exit()  -stops execution here.... ~ same
+
 
 for subdirs, dirs, files in os.walk(rootdir):
     # print(dirs)
@@ -24,12 +32,13 @@ for subdirs, dirs, files in os.walk(rootdir):
             media_out = str(dir_path + "/compressed_" +
                             file).replace(" ", "\\ ")
             media_watermarked = str(
-                dir_path + "/compressed_wm_" + file).replace(" ", "\\ ")
+                compressed + '/' + file).replace(" ", "\\ ")
 
             # run two processes on the video...
             subprocess.run("ffmpeg -i " + media_in.replace(" ", "\\ ") +
                            " -vcodec libx264 -crf 22 " + media_out, shell=True)
             filesArr.append(media_in)
+
             print("file (" + media_in + ") - removed to server")
 
             subprocess.run("ffmpeg -i " + media_out + " -i " + watermark +
@@ -38,11 +47,14 @@ for subdirs, dirs, files in os.walk(rootdir):
             filesArr.append(media_out)
             finalArr.append(media_watermarked)
 
+            print(media_watermarked)
+            quit()
+
             print("file (" + media_out + ") - removed to server")
 
-            pass
+            # pass
         elif extension == ".mp4":
-            print('MP4__ - ' + file)
+            #print('MP4__ - ' + file)
             pass
         else:
             pass
