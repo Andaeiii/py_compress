@@ -9,10 +9,10 @@ finalArr = []
 
 # get the current working directory...
 dir_path = os.path.dirname(os.path.realpath(__file__))
+compressed = str(dir_path) + '/media/compressed/'
 rootdir = dir_path + '/media/vids'
 
 watermark = dir_path + '/media/watermark.png'
-compressed = str(Path.cwd() / '/media/compressed/')
 
 print(compressed)
 
@@ -29,10 +29,9 @@ for subdirs, dirs, files in os.walk(rootdir):
             # print('Apple - ' + file)
             media_in = subdirs + "/" + file
 
-            media_out = str(dir_path + "/compressed_" +
-                            file).replace(" ", "\\ ")
-            media_watermarked = str(
-                compressed + '/' + file).replace(" ", "\\ ")
+            media_out = str(dir_path+"/compressed_"+file).replace(" ", "\\ ")
+
+            media_watermarked = str(compressed+'/'+file).replace(" ", "\\ ")
 
             # run two processes on the video...
             subprocess.run("ffmpeg -i " + media_in.replace(" ", "\\ ") +
@@ -47,14 +46,11 @@ for subdirs, dirs, files in os.walk(rootdir):
             filesArr.append(media_out)
             finalArr.append(media_watermarked)
 
-            print(media_watermarked)
-            quit()
-
             print("file (" + media_out + ") - removed to server")
 
             # pass
         elif extension == ".mp4":
-            #print('MP4__ - ' + file)
+            # print('MP4__ - ' + file)
             pass
         else:
             pass
@@ -70,7 +66,7 @@ for file in filesArr:
         os.remove(file)
 
 
-for file in finalArr:
-    if os.path.exists(file):
-        shutil.move(file, dir_path + '/compressed/'+file)
-        print("file (" + file + ") - to new location")
+# for file in finalArr:
+#     if os.path.exists(file):
+#         shutil.move(file, dir_path + '/compressed/'+file)
+#         print("file (" + file + ") - to new location")
